@@ -1,0 +1,2024 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#1a0505">
+    <title>Zeno Black VIP — Control Center</title>
+    <style>
+        :root {
+            --bg: #0a0303;
+            --panel: #140808;
+            --panel2: #1f0d0d;
+            --line: rgba(255, 80, 80, .2);
+            --text: #ffeded;
+            --muted: #cc9999;
+            --accent: #ff3333;
+            --accent2: #cc0000;
+            --accent-glow: rgba(255, 0, 0, .3);
+            --ok: #ff4444;
+            --shadow: 0 20px 55px rgba(0, 0, 0, .6);
+            --red-dark: #1a0505;
+            --red-panel: #0f0606;
+            --red-border: rgba(255, 50, 50, .25);
+            --red-glow: 0 0 30px rgba(255, 0, 0, .15);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Arial, sans-serif;
+            background: radial-gradient(circle at 50% -15%, #2a0a0a 0%, #140606 38%, var(--bg) 72%);
+            letter-spacing: .1px;
+            overflow-x: hidden;
+        }
+        body:before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(255, 0, 0, .06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(255, 0, 0, .04) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, .02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, .015) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 34px 34px, 34px 34px;
+            mask-image: linear-gradient(to bottom, #000, transparent 75%);
+            z-index: -1;
+        }
+
+        .app {
+            max-width: 820px;
+            margin: auto;
+            padding-bottom: 80px;
+            position: relative;
+        }
+
+        /* === VERSION BADGE GÓC TRÁI === */
+        .version-badge {
+            position: fixed;
+            bottom: 80px;
+            left: 16px;
+            z-index: 25;
+            font-size: 10px;
+            color: #664444;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: rgba(10, 3, 3, .7);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 50, 50, .06);
+            backdrop-filter: blur(10px);
+        }
+
+        /* === HEADER === */
+        .top {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            height: 60px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 3, 3, .88);
+            border-bottom: 1px solid rgba(255, 50, 50, .15);
+            backdrop-filter: blur(20px);
+        }
+        .top .brand-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .top .brand-left .app-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(150deg, rgba(80, 20, 20, .9), rgba(30, 8, 8, .96));
+            border: 1.5px solid rgba(255, 50, 50, .35);
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            font-weight: 950;
+            color: #ff4444;
+            box-shadow: 0 0 25px rgba(255, 0, 0, .1);
+            flex-shrink: 0;
+        }
+        .top .brand-left .title-group {
+            line-height: 1.15;
+        }
+        .top .brand-left .title-group h1 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #ff4444;
+            text-shadow: 0 0 30px rgba(255, 0, 0, .25);
+        }
+        .top .brand-left .title-group .sub-title {
+            font-size: 9px;
+            color: #cc6666;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            display: block;
+        }
+        .top .status-badge {
+            font-size: 9px;
+            color: #44dd88;
+            background: rgba(68, 221, 136, .08);
+            padding: 4px 12px;
+            border-radius: 50px;
+            border: 1px solid rgba(68, 221, 136, .15);
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 16px 16px 0 16px;
+        }
+
+        /* === CARD === */
+        .card {
+            border: 1px solid rgba(255, 50, 50, .15);
+            background: linear-gradient(145deg, rgba(25, 8, 8, .94), rgba(12, 4, 4, .97));
+            box-shadow: 0 24px 70px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .03);
+            border-radius: 26px;
+            overflow: hidden;
+        }
+
+        /* === HERO === */
+        .hero {
+            position: relative;
+            padding: 16px 20px;
+            min-height: 85px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 26px;
+        }
+        .hero:before {
+            content: "";
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            right: -40px;
+            top: -50px;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, .05);
+            filter: blur(50px);
+        }
+        .hero:after {
+            content: "";
+            position: absolute;
+            right: 20%;
+            bottom: -40px;
+            width: 120px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, .03);
+            filter: blur(30px);
+        }
+        .hero .hero-left .eyebrow {
+            font-size: 9px;
+            color: #ff6666;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 1px;
+            text-shadow: 0 0 20px rgba(255, 0, 0, .1);
+        }
+        .hero .hero-left .brand {
+            font-size: 26px;
+            line-height: 1;
+            font-weight: 950;
+            letter-spacing: -1.2px;
+            background: linear-gradient(100deg, #ff6666, #ff2222 60%, #cc0000);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px rgba(255, 0, 0, .1);
+        }
+        .hero .hero-left .sub {
+            color: var(--muted);
+            font-size: 10px;
+            margin: 1px 0 0 0;
+        }
+        .hero .hero-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hero .hero-right .meta-pills {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            align-items: flex-end;
+        }
+        .hero .hero-right .pill-sm {
+            padding: 2px 9px;
+            border-radius: 50px;
+            background: rgba(255, 0, 0, .05);
+            border: 1px solid rgba(255, 50, 50, .08);
+            font-size: 8px;
+            color: #dd9999;
+            backdrop-filter: blur(8px);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .hero .hero-right .pill-sm b {
+            color: #ff5555;
+        }
+        .hero .hero-right .pill-sm.highlight {
+            border-color: rgba(255, 50, 50, .25);
+            color: #ff5555;
+            background: rgba(255, 50, 50, .08);
+        }
+        .hero .hero-right .logo-mini {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+            font-weight: 950;
+            background: linear-gradient(150deg, rgba(80, 20, 20, .8), rgba(30, 8, 8, .96) 58%, rgba(20, 5, 5, .96));
+            border: 1px solid rgba(255, 50, 50, .4);
+            box-shadow: 0 0 35px rgba(255, 0, 0, .1), inset 0 0 30px rgba(255, 0, 0, .04);
+            color: #ff4444;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .hero .hero-right .logo-mini:after {
+            content: "VIP";
+            position: absolute;
+            bottom: 3px;
+            font-size: 6px;
+            letter-spacing: 2px;
+            color: #ff3333;
+            text-shadow: 0 0 10px rgba(255, 0, 0, .3);
+        }
+
+        /* === NAVIGATION TABS - 2 TAB === */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 16px 16px 0 16px;
+            padding: 6px;
+            background: rgba(20, 8, 8, .6);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 50, 50, .08);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            bottom: 16px;
+            left: 0;
+            right: 0;
+            max-width: 820px;
+            margin: 0 auto;
+            z-index: 30;
+            width: calc(100% - 32px);
+        }
+        .nav-tab {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #885555;
+            cursor: pointer;
+            transition: all .3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            position: relative;
+            border-radius: 50px;
+        }
+        .nav-tab:hover {
+            color: #cc7777;
+        }
+        .nav-tab.active {
+            color: #ff5555;
+            background: rgba(255, 50, 50, .15);
+            text-shadow: 0 0 20px rgba(255, 0, 0, .1);
+            box-shadow: 0 0 30px rgba(255, 0, 0, .05);
+        }
+        .nav-tab .tab-icon {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+        .nav-tab .tab-label {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* === PAGES === */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === STATUS === */
+        .status {
+            margin-top: 14px;
+            padding: 14px 17px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            border-radius: 24px;
+            background: linear-gradient(145deg, rgba(25, 8, 8, .94), rgba(12, 4, 4, .96));
+        }
+        .statusIcon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(145deg, rgba(255, 0, 0, .12), rgba(200, 0, 0, .07));
+            border: 1px solid rgba(255, 50, 50, .15);
+            font-size: 18px;
+            color: #ff5555;
+            flex-shrink: 0;
+        }
+        .statusText {
+            flex: 1;
+            min-width: 0;
+        }
+        .statusText h2 {
+            font-size: 15px;
+            margin: 0 0 3px;
+            color: #ff6666;
+        }
+        .statusText p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+        .statusDot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #442222;
+            box-shadow: 0 0 0 5px rgba(100, 40, 40, .1);
+            flex-shrink: 0;
+        }
+        .statusDot.on {
+            background: #ff3333;
+            box-shadow: 0 0 0 5px rgba(255, 0, 0, .1), 0 0 20px rgba(255, 0, 0, .4);
+            animation: pulse-red 1s infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 5px rgba(255, 0, 0, .1), 0 0 20px rgba(255, 0, 0, .4); }
+            50% { box-shadow: 0 0 0 8px rgba(255, 0, 0, .05), 0 0 35px rgba(255, 0, 0, .2); }
+        }
+
+        .btn {
+            border: 1px solid rgba(255, 50, 50, .4);
+            border-radius: 50px;
+            padding: 9px 14px;
+            background: linear-gradient(145deg, rgba(80, 20, 20, .25), rgba(50, 10, 10, .15));
+            color: #ff6666;
+            font-size: 11px;
+            font-weight: 850;
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap;
+            text-shadow: 0 0 10px rgba(255, 0, 0, .1);
+            flex-shrink: 0;
+        }
+        .btn:hover {
+            border-color: rgba(255, 50, 50, .6);
+            box-shadow: 0 0 25px rgba(255, 0, 0, .1);
+            background: linear-gradient(145deg, rgba(80, 20, 20, .35), rgba(50, 10, 10, .25));
+        }
+        .btn:active {
+            transform: scale(.98);
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 11px;
+            margin: 14px 0 18px;
+        }
+        .action {
+            min-height: 52px;
+            border: 1px solid rgba(255, 50, 50, .2);
+            border-radius: 50px;
+            background: linear-gradient(145deg, #1f0d0d, #140808);
+            color: #ff6666;
+            font-size: 12px;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .03);
+            letter-spacing: .2px;
+            transition: all .2s;
+        }
+        .action:hover {
+            border-color: rgba(255, 50, 50, .4);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .3), 0 0 30px rgba(255, 0, 0, .05);
+        }
+        .action:active {
+            transform: scale(.98);
+        }
+        .action.primary {
+            border-color: rgba(255, 50, 50, .4);
+            background: linear-gradient(135deg, rgba(100, 20, 20, .5), rgba(60, 10, 10, .4));
+            color: #ff5555;
+            text-shadow: 0 0 20px rgba(255, 0, 0, .2);
+        }
+        .action.primary:hover {
+            border-color: rgba(255, 50, 50, .6);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .3), 0 0 40px rgba(255, 0, 0, .1);
+        }
+
+        .sectionHead {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            margin: 8px 3px 11px;
+        }
+        .sectionHead h2 {
+            font-size: 17px;
+            margin: 0;
+            letter-spacing: -.2px;
+            color: #ff5555;
+            text-shadow: 0 0 20px rgba(255, 0, 0, .1);
+        }
+        .sectionHead span {
+            padding: 4px 9px;
+            border: 1px solid rgba(255, 50, 50, .1);
+            border-radius: 50px;
+            background: rgba(255, 0, 0, .03);
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        /* === ITEM - ĐẬM MÀU - RỰC RỠ === */
+        .grid {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .item {
+            font: inherit;
+            text-align: left;
+            color: inherit;
+            width: 100%;
+            min-height: 100px;
+            border: 1px solid rgba(255, 80, 80, .2);
+            border-radius: 26px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: all .3s cubic-bezier(.34, 1.2, .64, 1);
+            position: relative;
+            background: linear-gradient(145deg, rgba(50, 18, 18, .95), rgba(22, 10, 10, .92));
+            box-shadow: 
+                0 8px 35px rgba(0, 0, 0, .7),
+                0 2px 0 rgba(255, 120, 120, .08) inset,
+                0 -2px 0 rgba(0, 0, 0, .5) inset,
+                0 0 20px rgba(255, 0, 0, .02);
+            transform: translateY(0);
+            border-left: 4px solid rgba(255, 50, 50, .25);
+        }
+        .item:before {
+            content: "";
+            position: absolute;
+            inset: 1px;
+            border-radius: 25px;
+            background: linear-gradient(145deg, rgba(80, 25, 25, .15), rgba(15, 5, 5, .05));
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .3s ease;
+        }
+        .item:hover {
+            transform: translateY(-3px) scale(1.015);
+            box-shadow: 
+                0 16px 50px rgba(0, 0, 0, .8),
+                0 2px 0 rgba(255, 150, 150, .12) inset,
+                0 -2px 0 rgba(0, 0, 0, .6) inset,
+                0 0 40px rgba(255, 0, 0, .04);
+            border-color: rgba(255, 80, 80, .4);
+            border-left-color: rgba(255, 50, 50, .7);
+        }
+        .item:active {
+            transform: scale(.98);
+        }
+
+        .item.active {
+            background: linear-gradient(145deg, rgba(80, 25, 25, .98), rgba(35, 12, 12, .95));
+            border-color: rgba(255, 80, 80, .6);
+            border-left-color: #ff3333;
+            border-left-width: 5px;
+            box-shadow: 
+                0 2px 16px rgba(0, 0, 0, .9),
+                inset 0 4px 30px rgba(0, 0, 0, .7),
+                inset 0 0 80px rgba(255, 0, 0, .12),
+                0 0 60px rgba(255, 0, 0, .08),
+                0 0 120px rgba(255, 50, 50, .04);
+            transform: translateY(1px) scale(.99);
+        }
+        .item.active:before {
+            opacity: 1;
+            background: linear-gradient(145deg, rgba(120, 40, 40, .25), rgba(30, 10, 10, .08));
+        }
+        .item.active .icon {
+            background: linear-gradient(145deg, rgba(255, 50, 50, .4), rgba(200, 30, 30, .25));
+            border-color: rgba(255, 100, 100, .7);
+            box-shadow: inset 0 2px 15px rgba(0, 0, 0, .4), 0 0 60px rgba(255, 0, 0, .25), 0 0 120px rgba(255, 0, 0, .08);
+            transform: scale(.92);
+            color: #ff8888;
+        }
+        .item.active .info h3 {
+            color: #ff9999;
+            text-shadow: 0 0 60px rgba(255, 0, 0, .3), 0 0 120px rgba(255, 50, 50, .15);
+        }
+        .item.active .info p {
+            color: #eeaaaa;
+            text-shadow: 0 0 30px rgba(255, 0, 0, .05);
+        }
+        .item.active .toggle {
+            background: rgba(255, 50, 50, .5);
+            border-color: rgba(255, 100, 100, .8);
+            box-shadow: inset 0 2px 12px rgba(0, 0, 0, .5), 0 0 50px rgba(255, 0, 0, .2);
+        }
+        .item.active .toggle:after {
+            left: 20px;
+            background: #ff4444;
+            box-shadow: 0 0 40px rgba(255, 0, 0, 1), inset 0 1px 4px rgba(255, 255, 255, .4);
+        }
+
+        .icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(145deg, rgba(255, 0, 0, .15), rgba(200, 0, 0, .08));
+            border: 1px solid rgba(255, 50, 50, .2);
+            font-size: 26px;
+            color: #ff5555;
+            flex-shrink: 0;
+            transition: all .3s cubic-bezier(.34, 1.2, .64, 1);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, .3), 0 0 30px rgba(255, 0, 0, .02);
+        }
+        .info {
+            flex: 1;
+            min-width: 0;
+        }
+        .info h3 {
+            font-size: 17px;
+            margin: 0 0 4px;
+            color: #ffdddd;
+            transition: color .3s ease;
+            letter-spacing: 0.5px;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255, 0, 0, .05);
+        }
+        .info p {
+            font-size: 13px;
+            line-height: 1.3;
+            color: var(--muted);
+            margin: 0;
+            letter-spacing: 0.3px;
+            font-weight: 700;
+        }
+        .toggle {
+            width: 42px;
+            height: 24px;
+            border-radius: 20px;
+            background: rgba(42, 20, 20, .7);
+            border: 1px solid rgba(255, 50, 50, .12);
+            position: relative;
+            transition: all .3s cubic-bezier(.34, 1.2, .64, 1);
+            flex-shrink: 0;
+            box-shadow: inset 0 2px 12px rgba(0, 0, 0, .4);
+        }
+        .toggle:after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #885555, #664444);
+            transition: all .3s cubic-bezier(.34, 1.2, .64, 1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
+        }
+        .item.active .toggle:after {
+            left: 20px;
+        }
+
+        /* === ULTIMATE SETTINGS === */
+        .ultimate-section {
+            margin-top: 20px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255, 50, 50, .12);
+            border-radius: 24px;
+            background: linear-gradient(145deg, rgba(25, 8, 8, .92), rgba(12, 4, 4, .96));
+        }
+        .ultimate-section .ult-title {
+            font-size: 12px;
+            color: #885555;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ultimate-section .ult-title .ult-badge {
+            font-size: 8px;
+            padding: 2px 8px;
+            border-radius: 50px;
+            background: rgba(255, 50, 50, .15);
+            color: #ff5555;
+            border: 1px solid rgba(255, 50, 50, .2);
+        }
+
+        .ult-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 50, 50, .04);
+        }
+        .ult-row:last-child {
+            border-bottom: none;
+        }
+        .ult-row .ult-label {
+            font-size: 13px;
+            color: #ffcccc;
+            font-weight: 600;
+        }
+        .ult-row .ult-label small {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 400;
+            display: block;
+            margin-top: 1px;
+        }
+        .ult-row .ult-value {
+            font-size: 13px;
+            color: #ff5555;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 4px 14px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 50, 50, .15);
+            background: rgba(255, 0, 0, .04);
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+        .ult-row .ult-value:hover {
+            border-color: rgba(255, 50, 50, .3);
+            background: rgba(255, 0, 0, .08);
+        }
+        .ult-row .ult-value .arrow {
+            font-size: 10px;
+            color: #885555;
+        }
+
+        /* === DEVICE INFO === */
+        .device-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 16px;
+            background: rgba(255, 0, 0, .04);
+            border: 1px solid rgba(255, 50, 50, .06);
+            margin-bottom: 12px;
+        }
+        .device-info .dev-icon {
+            font-size: 16px;
+        }
+        .device-info .dev-text {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .device-info .dev-text b {
+            color: #ff6666;
+        }
+
+        /* === FPS ẢO === */
+        .fps-virtual {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
+            flex: 1;
+        }
+        .fps-virtual .fps-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 50, 50, .08);
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .fps-virtual .fps-bar .fps-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff4444, #ff8844, #44dd88);
+            border-radius: 4px;
+            transition: width 0.8s ease;
+        }
+        .fps-virtual .fps-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #44dd88;
+            min-width: 60px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* === UNLOCK 120FPS === */
+        .unlock-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 50, 50, .2);
+            background: linear-gradient(135deg, rgba(100, 20, 20, .3), rgba(60, 10, 10, .2));
+            color: #ff5555;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all .3s;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px rgba(255, 0, 0, .1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+            font-family: inherit;
+        }
+        .unlock-btn:hover {
+            border-color: rgba(255, 50, 50, .4);
+            background: linear-gradient(135deg, rgba(100, 20, 20, .5), rgba(60, 10, 10, .3));
+            box-shadow: 0 0 40px rgba(255, 0, 0, .05);
+        }
+        .unlock-btn:active {
+            transform: scale(.98);
+        }
+        .unlock-btn .flash {
+            display: inline-block;
+            animation: flash-pulse 0.8s infinite;
+        }
+        @keyframes flash-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        /* === BOOTER GAME === */
+        .booter-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .booter-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 22px;
+            border: 1px solid rgba(255, 50, 50, .12);
+            border-radius: 24px;
+            background: linear-gradient(145deg, rgba(25, 8, 8, .9), rgba(12, 4, 4, .95));
+            cursor: pointer;
+            transition: all .3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .booter-card:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 0, 0, .03), transparent 60%);
+            pointer-events: none;
+        }
+        .booter-card:hover {
+            border-color: rgba(255, 50, 50, .35);
+            transform: translateX(6px);
+            box-shadow: 0 10px 40px rgba(255, 0, 0, .05);
+        }
+        .booter-card:active {
+            transform: scale(.98);
+        }
+        .booter-card .bc-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 28px;
+            background: linear-gradient(145deg, rgba(255, 0, 0, .08), rgba(200, 0, 0, .04));
+            border: 1px solid rgba(255, 50, 50, .1);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .booter-card .bc-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .booter-card .bc-info {
+            flex: 1;
+        }
+        .booter-card .bc-info h3 {
+            margin: 0 0 2px 0;
+            font-size: 15px;
+            color: #ffcccc;
+        }
+        .booter-card .bc-info p {
+            margin: 0;
+            font-size: 11px;
+            color: var(--muted);
+        }
+        .booter-card .bc-badge {
+            padding: 3px 14px;
+            border-radius: 50px;
+            font-size: 9px;
+            font-weight: 700;
+            background: rgba(255, 50, 50, .1);
+            color: #ff6666;
+            border: 1px solid rgba(255, 50, 50, .15);
+        }
+        .booter-card .bc-badge.vip {
+            background: rgba(255, 50, 50, .2);
+            color: #ff4444;
+            border-color: rgba(255, 50, 50, .3);
+        }
+        .booter-card .bc-arrow {
+            color: #554444;
+            font-size: 18px;
+            transition: .2s;
+        }
+        .booter-card:hover .bc-arrow {
+            color: #885555;
+            transform: translateX(4px);
+        }
+
+        /* === SELECT POPUP === */
+        .select-popup {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: rgba(10, 3, 3, .85);
+            backdrop-filter: blur(12px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: .25s;
+        }
+        .select-popup.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .select-box {
+            width: min(340px, 100%);
+            padding: 20px 16px 16px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 50, 50, .2);
+            background: linear-gradient(145deg, rgba(25, 8, 8, .98), rgba(12, 4, 4, .99));
+            box-shadow: 0 30px 90px rgba(0, 0, 0, .6);
+        }
+        .select-box .sel-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #ff5555;
+            text-align: center;
+            margin-bottom: 14px;
+            letter-spacing: 1px;
+        }
+        .select-box .sel-options {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .select-box .sel-opt {
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 50, 50, .08);
+            background: rgba(255, 0, 0, .03);
+            color: #cc9999;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+            text-align: center;
+            font-family: inherit;
+        }
+        .select-box .sel-opt:hover {
+            border-color: rgba(255, 50, 50, .3);
+            background: rgba(255, 0, 0, .08);
+            color: #ff6666;
+        }
+        .select-box .sel-opt.active {
+            border-color: rgba(255, 50, 50, .5);
+            background: rgba(255, 0, 0, .12);
+            color: #ff5555;
+        }
+        .select-box .sel-close {
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 50, 50, .04);
+            background: transparent;
+            color: #664444;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            font-family: inherit;
+            transition: all .2s;
+        }
+        .select-box .sel-close:hover {
+            color: #885555;
+            background: rgba(255, 0, 0, .03);
+        }
+
+        /* === CODE STREAM === */
+        .code-stream {
+            position: fixed;
+            inset: 0;
+            z-index: 70;
+            background: rgba(10, 3, 3, .95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity .3s, visibility .3s;
+            padding: 20px;
+        }
+        .code-stream.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .code-stream .stream-box {
+            width: 100%;
+            max-width: 560px;
+            padding: 30px 24px 20px;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 50, 50, .2);
+            background: linear-gradient(145deg, rgba(15, 5, 5, .98), rgba(8, 3, 3, .99));
+            box-shadow: 0 40px 120px rgba(0, 0, 0, .8), 0 0 80px rgba(255, 0, 0, .05);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .code-stream .stream-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 50, 50, .08);
+        }
+        .code-stream .stream-header .stream-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff4444;
+            animation: dot-blink 0.6s infinite;
+        }
+        .code-stream .stream-header .stream-dot.yellow { background: #ffaa00; animation-delay: 0.2s; }
+        .code-stream .stream-header .stream-dot.green { background: #44dd88; animation-delay: 0.4s; }
+        .code-stream .stream-header .stream-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #44dd88;
+            letter-spacing: 2px;
+            font-family: 'Courier New', monospace;
+        }
+        .code-stream .stream-body {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.8;
+            color: #88dd88;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: hidden;
+            position: relative;
+        }
+        .code-stream .stream-body .stream-line {
+            display: block;
+            opacity: 0;
+            animation: line-appear 0.04s ease forwards;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .code-stream .stream-body .stream-line .cmd { color: #ff8888; }
+        .code-stream .stream-body .stream-line .val { color: #88ddff; }
+        .code-stream .stream-body .stream-line .str { color: #ffaa88; }
+        .code-stream .stream-body .stream-line .num { color: #ffdd88; }
+        .code-stream .stream-body .stream-line .comment { color: #668866; }
+        .code-stream .stream-body .stream-line .success { color: #44dd88; font-weight: bold; }
+        .code-stream .stream-body .stream-line .highlight { color: #ff4444; font-weight: bold; }
+        @keyframes line-appear {
+            0% { opacity: 0; transform: translateY(-6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .code-stream .stream-footer {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 50, 50, .06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .code-stream .stream-footer .stream-status {
+            font-size: 9px;
+            color: #44dd88;
+            letter-spacing: 1px;
+            animation: scan-blink 0.5s infinite;
+        }
+        .code-stream .stream-footer .stream-time {
+            font-size: 9px;
+            color: #668866;
+            font-family: 'Courier New', monospace;
+        }
+        .code-stream .stream-footer .stream-close {
+            font-size: 9px;
+            color: #885555;
+            cursor: pointer;
+            padding: 4px 14px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 50, 50, .06);
+            background: transparent;
+            font-family: inherit;
+            transition: all .2s;
+        }
+        .code-stream .stream-footer .stream-close:hover {
+            border-color: rgba(255, 50, 50, .2);
+            color: #cc7777;
+        }
+
+        /* === FOOTER === */
+        .footer {
+            text-align: center;
+            padding: 18px 0 10px 0;
+            color: #664444;
+            font-size: 11px;
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(255, 50, 50, .06);
+            margin-top: 20px;
+        }
+        .footer .heart {
+            color: #ff3333;
+            animation: heart-pulse 1.5s ease-in-out infinite;
+            display: inline-block;
+        }
+        @keyframes heart-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        .footer .dev-name {
+            color: #ff6666;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(255, 0, 0, .1);
+        }
+
+        /* === OTHER === */
+        .pill {
+            padding: 5px 9px;
+            border-radius: 50px;
+            background: rgba(255, 0, 0, .05);
+            border: 1px solid rgba(255, 50, 50, .08);
+            font-size: 10px;
+            color: #dd9999;
+            backdrop-filter: blur(8px);
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 80px;
+            z-index: 50;
+            transform: translate(-50%, 18px);
+            opacity: 0;
+            pointer-events: none;
+            padding: 10px 16px;
+            border-radius: 50px;
+            background: rgba(15, 5, 5, .96);
+            border: 1px solid rgba(255, 50, 50, .25);
+            backdrop-filter: blur(18px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, .5), 0 0 30px rgba(255, 0, 0, .03);
+            font-size: 11px;
+            font-weight: 750;
+            transition: .22s;
+            white-space: nowrap;
+            color: #ff6666;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        @keyframes scan-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        @keyframes dot-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* === GAME SELECT POPUP === */
+        .game-select-popup {
+            position: fixed;
+            inset: 0;
+            z-index: 85;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: rgba(10, 3, 3, .9);
+            backdrop-filter: blur(16px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: .3s ease;
+        }
+        .game-select-popup.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .game-select-box {
+            width: min(380px, 100%);
+            padding: 24px 20px 20px;
+            border-radius: 28px;
+            border: 1px solid rgba(255, 50, 50, .25);
+            background: linear-gradient(145deg, rgba(25, 8, 8, .98), rgba(12, 4, 4, .99));
+            box-shadow: 0 40px 120px rgba(0, 0, 0, .8), 0 0 80px rgba(255, 0, 0, .05);
+            text-align: center;
+        }
+        .game-select-box .gs-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: #ff5555;
+            text-shadow: 0 0 40px rgba(255, 0, 0, .15);
+            margin-bottom: 6px;
+        }
+        .game-select-box .gs-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 18px;
+        }
+        .game-select-box .gs-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .game-select-box .gs-opt {
+            padding: 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 50, 50, .12);
+            background: linear-gradient(145deg, rgba(30, 12, 12, .9), rgba(15, 6, 6, .95));
+            color: #ffcccc;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-family: inherit;
+        }
+        .game-select-box .gs-opt:hover {
+            border-color: rgba(255, 50, 50, .35);
+            background: linear-gradient(145deg, rgba(40, 16, 16, .95), rgba(20, 8, 8, .98));
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(255, 0, 0, .05);
+        }
+        .game-select-box .gs-opt .gs-icon {
+            font-size: 28px;
+        }
+        .game-select-box .gs-opt .gs-name {
+            font-size: 15px;
+            font-weight: 700;
+        }
+        .game-select-box .gs-opt .gs-badge {
+            font-size: 9px;
+            padding: 2px 10px;
+            border-radius: 50px;
+            background: rgba(255, 50, 50, .15);
+            color: #ff5555;
+            border: 1px solid rgba(255, 50, 50, .15);
+        }
+        .game-select-box .gs-close {
+            margin-top: 14px;
+            padding: 10px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 50, 50, .04);
+            background: transparent;
+            color: #664444;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            font-family: inherit;
+            transition: all .2s;
+        }
+        .game-select-box .gs-close:hover {
+            color: #885555;
+            background: rgba(255, 0, 0, .03);
+        }
+
+        @media(max-width:520px) {
+            .content { padding: 10px; }
+            .hero { min-height: 70px; padding: 12px 14px; border-radius: 20px; }
+            .hero .hero-left .brand { font-size: 20px; }
+            .hero .hero-right .logo-mini { width: 40px; height: 40px; font-size: 12px; }
+            .hero .hero-right .logo-mini:after { font-size: 5px; bottom: 2px; }
+            .top .brand-left .title-group h1 { font-size: 13px; }
+            .top .brand-left .app-avatar { width: 30px; height: 30px; font-size: 11px; }
+            .top .status-badge { font-size: 7px; padding: 3px 8px; }
+            .status { padding: 12px; flex-wrap: wrap; }
+            .btn { padding: 7px 10px; font-size: 9px; }
+            .item { min-height: 78px; padding: 14px 16px; border-radius: 20px; gap: 14px; }
+            .icon { width: 44px; height: 44px; font-size: 20px; }
+            .info h3 { font-size: 14px; }
+            .info p { font-size: 11px; }
+            .toggle { width: 36px; height: 20px; }
+            .toggle:after { width: 14px; height: 14px; }
+            .item.active .toggle:after { left: 16px; }
+            .sectionHead h2 { font-size: 15px; }
+            .nav-tabs { padding: 4px; gap: 4px; bottom: 12px; width: calc(100% - 24px); border-radius: 40px; }
+            .nav-tab { padding: 10px 0; font-size: 11px; }
+            .nav-tab .tab-icon { font-size: 17px; }
+            .nav-tab .tab-label { font-size: 10px; }
+            .booter-card { padding: 14px 16px; border-radius: 18px; }
+            .booter-card .bc-icon { width: 40px; height: 40px; font-size: 20px; }
+            .booter-card .bc-info h3 { font-size: 13px; }
+            .ultimate-section { padding: 14px 16px; }
+            .ult-row .ult-label { font-size: 12px; }
+            .ult-row .ult-value { font-size: 12px; padding: 3px 10px; }
+            .version-badge { font-size: 8px; bottom: 70px; left: 10px; padding: 3px 8px; }
+            .code-stream .stream-body { font-size: 9px; min-height: 120px; max-height: 300px; }
+            .select-box { width: min(300px, 100%); }
+            .game-select-box { width: min(320px, 100%); }
+            .game-select-box .gs-opt { padding: 12px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- VERSION BADGE GÓC TRÁI DƯỚI -->
+        <div class="version-badge">⚡ v1.3.4v</div>
+
+        <!-- HEADER -->
+        <header class="top">
+            <div class="brand-left">
+                <div class="app-avatar">VIP</div>
+                <div class="title-group">
+                    <h1>ZENO PANEL⚡️</h1>
+                    <span class="sub-title">🔥 Red Edition • Premium Control</span>
+                </div>
+            </div>
+            <div class="status-badge">● ONLINE</div>
+        </header>
+
+        <!-- CONTENT -->
+        <main class="content">
+
+            <!-- ===== PAGE: HOME ===== -->
+            <div id="page-home" class="page active">
+                <!-- Hero -->
+                <section class="hero card">
+                    <div class="hero-left">
+                        <div class="eyebrow">⚡ Premium control</div>
+                        <div class="brand">ZENO BLACK PANEL</div>
+                        <p class="sub">VERSION 2.0</p>
+                    </div>
+                    <div class="hero-right">
+                        <div class="meta-pills">
+                            <span class="pill-sm">VER <b>1.3.4</b></span>
+                            <span class="pill-sm highlight">REG EDITION</span>
+                        </div>
+                        <div class="logo-mini">ZENO</div>
+                    </div>
+                </section>
+
+                <!-- Status -->
+                <section class="status card">
+                    <div class="statusIcon">⌁</div>
+                    <div class="statusText">
+                        <h2>Trạng thái DNS</h2>
+                        <p id="dns"> DNS Zeno Black</p>
+                    </div>
+                    <div id="dot" class="statusDot"></div>
+                    <button class="btn" onclick="downloadDNS()">VIP DNS PANEL</button>
+                </section>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button class="action primary" onclick="allOn()">⚡ KÍCH HOẠT TẤT CẢ</button>
+                </div>
+
+                <!-- Module Grid - ĐẬM MÀU RỰC RỠ -->
+                <div class="sectionHead">
+                    <h2>SYSTEM FUNTION PANEL</h2>
+                    <span id="count">0/12 đang bật</span>
+                </div>
+                <div style="display:flex;gap:6px;overflow:auto;padding:0 1px 8px;scrollbar-width:none">
+                    <span class="pill" style="border-color:rgba(255,50,50,.15);">● 12 MODULE</span>
+                    <span class="pill" style="border-color:rgba(255,50,50,.15);">⚡ CHỨC NĂNG</span>
+                    <span class="pill" style="border-color:rgba(255,50,50,.15);color:#ff5555;">◈ PREMIUM</span>
+                </div>
+
+                <section class="grid" id="grid">
+                    <button class="item" type="button" onclick="toggleItem(this, 'Booster FPS', '🚀', 'booster')">
+                        <span class="icon">🚀</span>
+                        <span class="info"><h3>Booster FPS</h3><p>NHẠY MÀN-TĂNG FPS</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'OPTIMIZE CPU', '◔', 'cpu')">
+                        <span class="icon">◔</span>
+                        <span class="info"><h3>OPTIMIZE CPU</h3><p>TỐI ƯU CPU</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'HEADSHOT FIX ', '⌁', null)">
+                        <span class="icon">⌁</span>
+                        <span class="info"><h3>HEADSHOT FIX</h3><p>FIX LỐ</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'AIMLOCK', '▥', null)">
+                        <span class="icon">▥</span>
+                        <span class="info"><h3>AIMLOCK</h3><p>BÁM ĐẦU</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'SENSI BOOTER', '◉', null)">
+                        <span class="icon">◉</span>
+                        <span class="info"><h3>SENSI BOOTER</h3><p>NHẠY-MƯỢT</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'SENSI ERLIX', 'ϟ', null)">
+                        <span class="icon">ϟ</span>
+                        <span class="info"><h3>SENSI ERLIX</h3><p>FIX RUNG</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'BULLER ALIGN', '❄', null)">
+                        <span class="icon">❄</span>
+                        <span class="info"><h3>BULLER ALIGN</h3><p>FIX LỆCH ĐẠN</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'SENSITIVITY ', '▣', null)">
+                        <span class="icon">▣</span>
+                        <span class="info"><h3>SENSITIVITY</h3><p>ĐẦM TÂM</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'RAM OPTIMIZE ', '💧', 'ram')">
+                        <span class="icon">💧</span>
+                        <span class="info"><h3>RAM OPTIMIZE</h3><p>DỌN RAM-TỐI ƯU RAM</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'AIMLOCKDOWN BLACK', '♢', null)">
+                        <span class="icon">♢</span>
+                        <span class="info"><h3>AIMLOCLDOWN BLACK</h3><p>FIX NẬNG TÂM</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'ỔN ĐỊNH THIẾT BỊ', '🛡', null)">
+                        <span class="icon">🛡</span>
+                        <span class="info"><h3>ỔN ĐỊNH THIẾT BỊ</h3><p>TỐI ƯU-NÂNG CAO</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                    <button class="item" type="button" onclick="toggleItem(this, 'SREEN BOOTER', '◈', null)">
+                        <span class="icon">◈</span>
+                        <span class="info"><h3>SREEN BOOTER</h3><p>BUFF MÀN - FIX TÂM</p></span>
+                        <span class="toggle" aria-hidden="true"></span>
+                    </button>
+                </section>
+
+                <!-- === ULTIMATE SETTINGS === -->
+                <div class="ultimate-section">
+                    <div class="ult-title">
+                        ⚡ ULTIMATE DEVICE
+                        <span class="ult-badge">PREMIUM</span>
+                    </div>
+
+                    <div class="device-info" style="margin-bottom:10px;">
+                        <span class="dev-icon">📱</span>
+                        <span class="dev-text">DEVICE : <b>IPHONE-ADR</b></span>
+                        <span style="flex:1"></span>
+                        <span class="dev-text" style="font-size:10px;color:#664444;">● ACTIVE</span>
+                    </div>
+
+                    <div class="ult-row">
+                        <div class="ult-label">
+                            Chế độ UTILMATE
+                            <small>TINH CHỈNH</small>
+                        </div>
+                        <button class="ult-value" onclick="openSelect('ultimate')">
+                            <span id="ultModeDisplay">Tiêu chuẩn</span>
+                            <span class="arrow">▼</span>
+                        </button>
+                    </div>
+
+                    <div class="ult-row">
+                        <div class="ult-label">
+                            DPI ULTIMATE
+                            <small>TINH CHỈNH</small>
+                        </div>
+                        <button class="ult-value" onclick="openSelect('dpi')">
+                            <span id="dpiDisplay">1.0x</span>
+                            <span class="arrow">▼</span>
+                        </button>
+                    </div>
+
+                    <div class="ult-row" style="border-bottom: none; padding-bottom: 4px;">
+                        <div class="ult-label">
+                            FPS
+                            <small>ĐANG CHẠY</small>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:12px;flex:1;max-width:200px;">
+                            <div class="fps-virtual">
+                                <div class="fps-bar">
+                                    <div class="fps-fill" id="fpsFill" style="width:0%;"></div>
+                                </div>
+                                <span class="fps-label" id="fpsLabel">0 FPS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="unlock-btn" onclick="unlock120FPS()">
+                        <span class="flash">⚡</span> UNLOCK 120FPS <span class="flash">⚡</span>
+                    </button>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="footer">
+                    NHẢ PHÁT TRIỂN<span class="dev-name">Huy Tran ⚡</span>
+                    <span style="display:block;font-size:9px;color:#554444;margin-top:3px;">
+                        <span class="heart"></span> ZENO BLACK PANEL VIP • All rights
+                    </span>
+                </div>
+            </div>
+
+            <!-- ===== PAGE: BOOTER ===== -->
+            <div id="page-booter" class="page">
+                <div style="margin-bottom:14px;">
+                    <h2 style="color:#ff5555;font-size:19px;margin:0 0 3px 0;text-shadow:0 0 20px rgba(255,0,0,.1);">🎮 BOOTER GAME OPTIMIZE</h2>
+                    <p style="color:var(--muted);font-size:12px;margin:0;">TỐI ƯU FREE FIRE</p>
+                </div>
+
+                <div class="booter-grid">
+                    <div class="booter-card" onclick="openFF('thuong')">
+                        <div class="bc-icon">
+                <img src="https://sf-static.upanhlaylink.com/img/image_20260907b1cf8a8905dd2a26a272f1560110ddea.jpg" alt="FREE FIRE">
+                        </div>
+                        <div class="bc-info">
+                            <h3>Free Fire Thường</h3>
+                            <p>BOOTER FREE FIRE THƯỜNG</p>
+                        </div>
+                        <span class="bc-badge">BOOTER GAME</span>
+                        <span class="bc-arrow">›</span>
+                    </div>
+
+                    <div class="booter-card" onclick="openFF('max')">
+                        <div class="bc-icon">
+                      <img src="https://sf-static.upanhlaylink.com/img/image_20260907b303b2308af28792675f6bbf284d6475.jpg" alt="FREE FIRE MAX">
+                        </div>
+                        <div class="bc-info">
+                            <h3>Free Fire Max</h3>
+                            <p>BOOTER GAME FREE FIRE MAX</p>
+                        </div>
+                        <span class="bc-badge vip">BOOTER GAME</span>
+                        <span class="bc-arrow">›</span>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    Phát triển bởi <span class="dev-name">Huy Tran ⚡</span>
+                    <span style="display:block;font-size:9px;color:#554444;margin-top:3px;">
+                        <span class="heart">❤️</span> Zeno Black PANEL• All rights
+                    </span>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- NAVIGATION TABS -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchPage('home')">
+                <span class="tab-icon"></span>
+                <span class="tab-label">HOME</span>
+            </button>
+            <button class="nav-tab" onclick="switchPage('booter')">
+                <span class="tab-icon"></span>
+                <span class="tab-label">BOOTER</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- SELECT POPUP -->
+    <div id="selectPopup" class="select-popup">
+        <div class="select-box">
+            <div class="sel-title" id="selTitle">Chọn chế độ</div>
+            <div class="sel-options" id="selOptions"></div>
+            <button class="sel-close" onclick="closeSelect()">✕ Đóng</button>
+        </div>
+    </div>
+
+    <!-- GAME SELECT POPUP -->
+    <div id="gameSelectPopup" class="game-select-popup">
+        <div class="game-select-box">
+            <div class="gs-title">🎮 CHỌN GAME</div>
+            <div class="gs-sub">🔥 120FPS đã được mở khóa! Chọn game để boot.</div>
+            <div class="gs-options">
+                <button class="gs-opt" onclick="gameSelect('thuong')">
+                    <span class="gs-icon">🔥</span>
+                    <span class="gs-name">Free Fire Thường</span>
+                    <span class="gs-badge">BOOT</span>
+                </button>
+                <button class="gs-opt" onclick="gameSelect('max')">
+                    <span class="gs-icon">⚡</span>
+                    <span class="gs-name">Free Fire Max</span>
+                    <span class="gs-badge" style="background:rgba(255,50,50,.2);color:#ff4444;border-color:rgba(255,50,50,.3);">VIP</span>
+                </button>
+            </div>
+            <button class="gs-close" onclick="closeGameSelect()">✕ Đóng</button>
+        </div>
+    </div>
+
+    <!-- CODE STREAM -->
+    <div id="codeStream" class="code-stream">
+        <div class="stream-box">
+            <div class="stream-header">
+                <span class="stream-dot"></span>
+                <span class="stream-dot yellow"></span>
+                <span class="stream-dot green"></span>
+                <span class="stream-title" id="streamTitle">⚡ EXECUTING</span>
+                <span style="flex:1"></span>
+                <span style="font-size:8px;color:#668866;">[ v1.3.4v ]</span>
+            </div>
+            <div class="stream-body" id="streamBody"></div>
+            <div class="stream-footer">
+                <span class="stream-status">● RUNNING</span>
+                <span class="stream-time" id="streamTime">0.0s</span>
+                <button class="stream-close" onclick="closeStream()">✕ CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // === DATA ===
+        const ultimateModes = ['Tiêu chuẩn', 'Cao cấp', 'Muợt mà'];
+        const dpiModes = ['1.0x', '2.0x', '3.0x', '4.0x', '5.0x'];
+
+        let currentUltimate = 'Tiêu chuẩn';
+        let currentDpi = '1.0x';
+        let fpsInterval = null;
+        let isUnlocked = false;
+
+        // === CODE MAP ===
+        const codeMap = {
+            'booster': {
+                title: '⚡ BOOSTER FPS ENGINE',
+                lines: [
+                    { text: '<span class="comment">// ===== BOOSTER FPS ENGINE v3.7 =====</span>', delay: 50 },
+                    { text: '<span class="comment">// Zeno Black Ultimate Optimizer</span>', delay: 50 },
+                    { text: '<span class="cmd">$</span> <span class="val">gpu</span>.<span class="cmd">setPerformance</span>({', delay: 60 },
+                    { text: '  <span class="val">mode</span>: <span class="str">"high"</span>,', delay: 50 },
+                    { text: '  <span class="val">fps</span>: <span class="num">120</span>,', delay: 50 },
+                    { text: '  <span class="val">vsync</span>: <span class="num">0</span>,', delay: 50 },
+                    { text: '  <span class="val">antialiasing</span>: <span class="str">"off"</span>,', delay: 50 },
+                    { text: '  <span class="val">texture</span>: <span class="str">"high"</span>', delay: 50 },
+                    { text: '})', delay: 60 },
+                    { text: '<span class="cmd">>></span> <span class="str">"🔧 GPU Clock: +25%"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"🔧 GPU Memory: 4.2 GB"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"🔧 Shader Cache: Optimized"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"✅ FPS Boost: 120 FPS"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"✅ Render latency: 4.2ms"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="success">✓ Hoàn thành! FPS đã được tối ưu.</span>', delay: 80 },
+                ]
+            },
+            'cpu': {
+                title: '⚡ CPU OPTIMIZER ENGINE',
+                lines: [
+                    { text: '<span class="comment">// ===== CPU OPTIMIZER v3.7 =====</span>', delay: 50 },
+                    { text: '<span class="comment">// Zeno Black Core Scheduler</span>', delay: 50 },
+                    { text: '<span class="cmd">$</span> <span class="val">cpu</span>.<span class="cmd">setGovernor</span>({', delay: 60 },
+                    { text: '  <span class="val">policy</span>: <span class="str">"performance"</span>,', delay: 50 },
+                    { text: '  <span class="val">cores</span>: <span class="str">"all"</span>,', delay: 50 },
+                    { text: '  <span class="val">priority</span>: <span class="str">"high"</span>,', delay: 50 },
+                    { text: '  <span class="val">boost</span>: <span class="num">true</span>,', delay: 50 },
+                    { text: '  <span class="val">power</span>: <span class="str">"max"</span>', delay: 50 },
+                    { text: '})', delay: 60 },
+                    { text: '<span class="cmd">>></span> <span class="str">"⚡ 8 cores active @ 3.8GHz"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"⚡ CPU temp: 62°C"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"⚡ Thread priority: Realtime"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"✅ CPU Governor: Performance"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"✅ Process priority: High"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="success">✓ Hoàn thành! CPU đã được tối ưu.</span>', delay: 80 },
+                ]
+            },
+            'ram': {
+                title: '⚡ RAM CLEANER ENGINE',
+                lines: [
+                    { text: '<span class="comment">// ===== RAM CLEANER v3.7 =====</span>', delay: 50 },
+                    { text: '<span class="comment">// Zeno Black Memory Manager</span>', delay: 50 },
+                    { text: '<span class="cmd">$</span> <span class="val">memory</span>.<span class="cmd">clean</span>({', delay: 60 },
+                    { text: '  <span class="val">level</span>: <span class="str">"deep"</span>,', delay: 50 },
+                    { text: '  <span class="val">cache</span>: <span class="num">true</span>,', delay: 50 },
+                    { text: '  <span class="val">swap</span>: <span class="num">true</span>,', delay: 50 },
+                    { text: '  <span class="val">temp</span>: <span class="num">true</span>,', delay: 50 },
+                    { text: '  <span class="val">logs</span>: <span class="num">false</span>', delay: 50 },
+                    { text: '})', delay: 60 },
+                    { text: '<span class="cmd">>></span> <span class="str">"⚡ Cache cleared: 256 MB"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"⚡ Temp files: 128 MB"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"⚡ Swap cleared: 512 MB"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"✅ Freed: 1.2 GB RAM"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="str">"✅ Memory pressure: Low"</span>', delay: 70 },
+                    { text: '<span class="cmd">>></span> <span class="success">✓ Hoàn thành! RAM đã được giải phóng.</span>', delay: 80 },
+                ]
+            }
+        };
+
+        // === SWITCH PAGE ===
+        function switchPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            const tabs = document.querySelectorAll('.nav-tab');
+            const map = { 'home': 0, 'booter': 1 };
+            if (map[page] !== undefined) tabs[map[page]].classList.add('active');
+        }
+
+        // === AUDIO ===
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playBeep(freq = 800, duration = 80, volume = 0.15) {
+            try {
+                initAudio();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.frequency.value = freq;
+                oscillator.type = 'sine';
+                gainNode.gain.value = volume;
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + duration / 1000);
+            } catch(e) {}
+        }
+
+        function playToggleSound(isOn) {
+            if (isOn) {
+                playBeep(880, 60, 0.12);
+                setTimeout(() => playBeep(1100, 70, 0.12), 100);
+            } else {
+                playBeep(500, 80, 0.12);
+            }
+        }
+
+        // === SELECT POPUP ===
+        function openSelect(type) {
+            const popup = document.getElementById('selectPopup');
+            const title = document.getElementById('selTitle');
+            const options = document.getElementById('selOptions');
+            
+            if (type === 'ultimate') {
+                title.textContent = '⚡ Chế độ ULTIMATE';
+                options.innerHTML = ultimateModes.map(m => 
+                    `<button class="sel-opt ${m === currentUltimate ? 'active' : ''}" onclick="selectUltimate('${m}')">${m}</button>`
+                ).join('');
+            } else {
+                title.textContent = '🔥Chọn DPI ULTIMATE';
+                options.innerHTML = dpiModes.map(m => 
+                    `<button class="sel-opt ${m === currentDpi ? 'active' : ''}" onclick="selectDpi('${m}')">${m}</button>`
+                ).join('');
+            }
+            
+            popup.classList.add('show');
+        }
+
+        function closeSelect() {
+            document.getElementById('selectPopup').classList.remove('show');
+        }
+
+        function selectUltimate(mode) {
+            currentUltimate = mode;
+            document.getElementById('ultModeDisplay').textContent = mode;
+            closeSelect();
+            toast('⚡ Chế độ: ' + mode);
+            playBeep(660, 60, 0.1);
+            setTimeout(() => playBeep(880, 60, 0.1), 100);
+        }
+
+        function selectDpi(mode) {
+            currentDpi = mode;
+            document.getElementById('dpiDisplay').textContent = mode;
+            closeSelect();
+            toast('📐 DPI: ' + mode);
+            playBeep(660, 60, 0.1);
+            setTimeout(() => playBeep(880, 60, 0.1), 100);
+        }
+
+        // === FPS ===
+        function startFPS() {
+            if (fpsInterval) return;
+            
+            function generateFPS() {
+                let base;
+                if (isUnlocked) {
+                    base = 100 + Math.random() * 20;
+                } else {
+                    base = 55 + Math.random() * 65;
+                }
+                return Math.round(base * 10) / 10;
+            }
+
+            function updateFPS() {
+                const fps = generateFPS();
+                const pct = ((fps - 55) / 65) * 100;
+                document.getElementById('fpsFill').style.width = Math.min(pct, 100) + '%';
+                document.getElementById('fpsLabel').textContent = fps.toFixed(1) + ' FPS';
+            }
+
+            updateFPS();
+            fpsInterval = setInterval(updateFPS, 800);
+        }
+
+        // === UNLOCK 120FPS ===
+        function unlock120FPS() {
+            if (isUnlocked) {
+                toast('⚡ 120FPS đã được mở khóa!');
+                showGameSelect();
+                return;
+            }
+            showCodeStream('unlock');
+            toast('⚡ ĐANG UNLOCK 120FPS...');
+        }
+
+        function showGameSelect() {
+            document.getElementById('gameSelectPopup').classList.add('show');
+        }
+
+        function closeGameSelect() {
+            document.getElementById('gameSelectPopup').classList.remove('show');
+        }
+
+        function gameSelect(type) {
+            closeGameSelect();
+            closeStream();
+            const gameName = type === 'max' ? 'Free Fire Max' : 'Free Fire';
+            toast('🎮 BOOTING ' + gameName + '...');
+            playBeep(1000, 80, 0.15);
+            setTimeout(() => playBeep(1200, 80, 0.15), 150);
+            
+            const started = Date.now();
+            window.location.href = 'freefire://';
+            setTimeout(() => {
+                if (Date.now() - started < 1800) {
+                    window.location.href = 'https://apps.apple.com/vn/app/garena-free-fire-9th-anniversary/id1300146617';
+                }
+            }, 1200);
+        }
+
+        // === SHOW CODE STREAM ===
+        function showCodeStream(type) {
+            const stream = document.getElementById('codeStream');
+            const body = document.getElementById('streamBody');
+            const timeEl = document.getElementById('streamTime');
+            const titleEl = document.getElementById('streamTitle');
+            
+            body.innerHTML = '';
+            
+            let codeData;
+            if (type === 'unlock') {
+                codeData = {
+                    title: '⚡ UNLOCK 120FPS ENGINE',
+                    lines: [
+                        { text: '<span class="comment">// ===== UNLOCK 120FPS ENGINE v3.7 =====</span>', delay: 50 },
+                        { text: '<span class="comment">// Zeno Black Ultimate Optimizer</span>', delay: 50 },
+                        { text: '<span class="cmd">$</span> <span class="val">system</span>.<span class="cmd">unlockFPS</span>({', delay: 60 },
+                        { text: '  <span class="val">target</span>: <span class="num">120</span>,', delay: 50 },
+                        { text: '  <span class="val">mode</span>: <span class="str">"' + currentUltimate + '"</span>,', delay: 50 },
+                        { text: '  <span class="val">dpi</span>: <span class="str">"' + currentDpi + '"</span>,', delay: 50 },
+                        { text: '  <span class="val">device</span>: <span class="str">"IPHONE-ADR"</span>,', delay: 50 },
+                        { text: '  <span class="val">engine</span>: <span class="str">"v3.7"</span>,', delay: 50 },
+                        { text: '  <span class="val">boost</span>: <span class="num">true</span>,', delay: 50 },
+                        { text: '  <span class="val">stability</span>: <span class="str">"high"</span>', delay: 50 },
+                        { text: '})', delay: 60 },
+                        { text: '<span class="cmd">>></span> <span class="str">"🔧 Applying GPU patches..."</span>', delay: 70 },
+                        { text: '<span class="cmd">>></span> <span class="str">"🔧 Optimizing render pipeline..."</span>', delay: 70 },
+                        { text: '<span class="cmd">>></span> <span class="str">"🔧 Bypassing frame limiter..."</span>', delay: 80 },
+                        { text: '<span class="cmd">>></span> <span class="str">"⚡ GPU Clock: 1800MHz → 2100MHz"</span>', delay: 80 },
+                        { text: '<span class="cmd">>></span> <span class="str">"⚡ Memory Bandwidth: 42GB/s"</span>', delay: 80 },
+                        { text: '<span class="cmd">>></span> <span class="str">"⚡ Frame buffer: 120Hz"</span>', delay: 80 },
+                        { text: '<span class="cmd">>></span> <span class="str">"✅ VSync: DISABLED"</span>', delay: 70 },
+                        { text: '<span class="cmd">>></span> <span class="str">"✅ Triple buffering: ENABLED"</span>', delay: 70 },
+                        { text: '<span class="cmd">>></span> <span class="str">"✅ Render latency: 4.2ms"</span>', delay: 70 },
+                        { text: '<span class="cmd">>></span> <span class="str">"✅ Frame time: 8.3ms"</span>', delay: 70 },
+                        { text: '<span class="cmd">>></span> <span class="highlight">🔥 120FPS UNLOCKED SUCCESSFULLY!</span>', delay: 100 },
+                        { text: '<span class="cmd">>></span> <span class="success">✓ Hoàn thành! 120FPS đã sẵn sàng.</span>', delay: 80 },
+                    ]
+                };
+            } else {
+                codeData = codeMap[type] || codeMap['booster'];
+            }
+            
+            titleEl.textContent = codeData.title;
+            stream.classList.add('show');
+            
+            let lineIndex = 0;
+            const startTime = Date.now();
+
+            function showNextLine() {
+                if (lineIndex >= codeData.lines.length) {
+                    if (type === 'unlock') {
+                        isUnlocked = true;
+                        document.getElementById('fpsFill').style.width = '100%';
+                        document.getElementById('fpsLabel').textContent = '120.0 FPS';
+                        setTimeout(() => {
+                            showGameSelect();
+                        }, 500);
+                    }
+                    return;
+                }
+
+                const line = codeData.lines[lineIndex];
+                const div = document.createElement('span');
+                div.className = 'stream-line';
+                div.innerHTML = line.text;
+                body.appendChild(div);
+                
+                const elapsed = (Date.now() - startTime) / 1000;
+                timeEl.textContent = elapsed.toFixed(1) + 's';
+                body.scrollTop = body.scrollHeight;
+                
+                lineIndex++;
+                const delay = line.delay || 50;
+                setTimeout(showNextLine, delay);
+            }
+
+            setTimeout(showNextLine, 200);
+
+            const duration = type === 'unlock' ? 2800 : 2200;
+            setTimeout(() => {
+                if (type !== 'unlock') closeStream();
+            }, duration);
+
+            playBeep(1000, 80, 0.15);
+            setTimeout(() => playBeep(1200, 80, 0.15), 200);
+            if (type === 'unlock') {
+                setTimeout(() => playBeep(1400, 80, 0.15), 400);
+            }
+        }
+
+        function closeStream() {
+            document.getElementById('codeStream').classList.remove('show');
+            document.getElementById('streamBody').innerHTML = '';
+        }
+
+        // === TOGGLE ITEM ===
+        function updateCount() {
+            const active = document.querySelectorAll('.item.active').length;
+            document.getElementById('count').textContent = active + '/12 đang bật';
+        }
+
+        function toggleItem(el, name, icon, codeType) {
+            const isOn = el.classList.toggle('active');
+            updateCount();
+            
+            if (isOn) {
+                playToggleSound(true);
+                toast('✅ ĐÃ BẬT - ' + name);
+                if (codeType && codeMap[codeType]) {
+                    setTimeout(() => {
+                        showCodeStream(codeType);
+                    }, 300);
+                }
+            } else {
+                playToggleSound(false);
+                toast('⛔ ĐÃ TẮT - ' + name);
+            }
+        }
+
+        // === ALL ON ===
+        function allOn() {
+            const items = document.querySelectorAll('.item');
+            items.forEach(el => {
+                el.classList.add('active');
+                setTimeout(() => playBeep(880, 50, 0.08), 50);
+            });
+            updateCount();
+            toast('⚡ KÍCH HOẠT TẤT CẢ - 12 chức năng');
+        }
+
+        // === DNS ===
+        function downloadDNS() {
+            document.getElementById('dot').classList.add('on');
+            document.getElementById('dns').textContent = 'Sẵn sàng tải Next DNS 2.0.1 IPA';
+            toast('📥 ĐANG TẢI DNS...');
+            playBeep(660, 100, 0.12);
+            
+            const a = document.createElement('a');
+            a.href = 'dns/Next-Dns-2.0.1.ipa';
+            a.download = 'Next-Dns-2.0.1.ipa';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+
+        // === OPEN FF ===
+        function openFF(type) {
+            const gameName = type === 'max' ? 'Free Fire Max' : 'Free Fire';
+            toast('🎮 BOOTING ' + gameName + '...');
+            playBeep(1000, 80, 0.15);
+            setTimeout(() => playBeep(1200, 80, 0.15), 150);
+            
+            const started = Date.now();
+            window.location.href = 'freefire://';
+            setTimeout(() => {
+                if (Date.now() - started < 1800) {
+                    window.location.href = 'https://apps.apple.com/vn/app/garena-free-fire-9th-anniversary/id1300146617';
+                }
+            }, 1200);
+        }
+
+        // === TOAST ===
+        function toast(s) {
+            const t = document.getElementById('toast');
+            t.textContent = s;
+            t.classList.add('show');
+            clearTimeout(window.tt);
+            window.tt = setTimeout(() => t.classList.remove('show'), 1700);
+        }
+
+        // === KHỞI TẠO ===
+        document.addEventListener('click', initAudio, { once: true });
+        document.addEventListener('touchstart', initAudio, { once: true });
+
+        setTimeout(() => {
+            toast('🔥 ZENO BLACK PANEL - Sẵn sàng!');
+            playBeep(880, 60, 0.1);
+            setTimeout(() => playBeep(1100, 60, 0.1), 120);
+            startFPS();
+        }, 500);
+
+        updateCount();
+
+        document.getElementById('selectPopup').addEventListener('click', function(e) {
+            if (e.target === this) closeSelect();
+        });
+        document.getElementById('codeStream').addEventListener('click', function(e) {
+            if (e.target === this) closeStream();
+        });
+        document.getElementById('gameSelectPopup').addEventListener('click', function(e) {
+            if (e.target === this) closeGameSelect();
+        });
+    </script>
+</body>
+</html>
